@@ -1,0 +1,11 @@
+{% extends '__base__.html' %}
+
+{% block body %}
+<div class="container">
+    <form action="/auth/" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input class='form-control' type='submit' value='Вход'>
+    </form>
+</div>
+{% endblock body %}

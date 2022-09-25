@@ -1,0 +1,36 @@
+{% extends '__base__.html' %}
+
+{% block body %}
+<div class="container">
+    {% include 'wim/includes/nav.html' %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Тип</th>
+                <th scope="col">Дата и время</th>
+                <th scope="col">Категория</th>
+                <th scope="col">Пояснение</th>
+                <th scope="col">Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in object_list %}
+            <tr>
+                <th style="color: var({{ item.type.get_color }})" scope="row">{{ item.id }}</th>
+                <td style="color: var({{ item.type.get_color }})">{{ item.get_type }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.date }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.type.name }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.name }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.cost }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form action="/pay/" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input class='form-control' type='submit' value='Сохранить'>
+    </form>
+</div>
+{% endblock body %}
