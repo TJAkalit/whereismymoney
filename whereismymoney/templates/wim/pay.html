@@ -8,6 +8,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Тип</th>
+                <th scope="col">Пользователь</th>
                 <th scope="col">Дата и время</th>
                 <th scope="col">Категория</th>
                 <th scope="col">Пояснение</th>
@@ -19,12 +20,20 @@
             <tr>
                 <th style="color: var({{ item.type.get_color }})" scope="row">{{ item.id }}</th>
                 <td style="color: var({{ item.type.get_color }})">{{ item.get_type }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.user }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.date }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.type.name }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.name }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.cost }}</td>
             </tr>
             {% endfor %}
+            <th scope="row"></th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{ summ }}</td>
         </tbody>
     </table>
     <form action="/pay/" method="POST">
@@ -32,5 +41,16 @@
         {{ form }}
         <input class='form-control' type='submit' value='Сохранить'>
     </form>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+      </nav>
 </div>
 {% endblock body %}
