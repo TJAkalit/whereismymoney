@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in object_list %}
+            {% for item in page_obj %}
             <tr>
                 <th style="color: var({{ item.type.get_color }})" scope="row">{{ item.id }}</th>
                 <td style="color: var({{ item.type.get_color }})">{{ item.get_type }}</td>
@@ -27,13 +27,33 @@
                 <td style="color: var({{ item.type.get_color }})">{{ item.cost }}</td>
             </tr>
             {% endfor %}
-            <th scope="row"></th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>{{ summ }}</td>
+            <tr>
+                <td>За</td>
+                <td>Страницу</td>
+                <td>Доход</td>
+                <td></td>
+                <td>Расход</td>
+                <td></td>
+                <td>Итого</td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+                <td>{{ page_obj.page_income|floatformat:-2 }}</td>
+                <td>-</td>
+                <td>{{ page_obj.page_outcome|floatformat:-2 }}</td>
+                <td>=</td>
+                <td>{{ page_obj.page_summ|floatformat:-2 }}</td>
+            </tr>
+            <tr>
+                <th scope="row"></th>
+                <td>Итого</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ summ|floatformat:-2 }}</td>
+            </tr>
         </tbody>
     </table>
     <form action="/pay/" method="POST">
@@ -45,9 +65,11 @@
         <ul class="pagination">
             {% if page_obj.has_previous %}
             <li class="page-item"><a class="page-link" href="./?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.previous_page_number  }}">{{ page_obj.previous_page_number  }}</a></li>
             {% endif %}
             <li class="page-item"><a class="page-link" href="./?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
             {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.next_page_number  }}">{{ page_obj.next_page_number  }}</a></li>
             <li class="page-item"><a class="page-link" href="./?page={{ page_obj.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>

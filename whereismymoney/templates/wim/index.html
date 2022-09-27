@@ -3,5 +3,13 @@
 {% block body %}
 <div class="container">
     {% include 'wim/includes/nav.html' %}
+    {{ month_begin_fmt }} - {{ month_end_fmt }}
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-label="Basic example" style="width: {{ percent }}%" aria-valuenow="{{ today.day }}" aria-valuemin="0" aria-valuemax="{{ month_end.day }}"></div>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">Доходы за месяц: {{ income|floatformat:-2 }}</li>
+        <li class="list-group-item">Расходы за месяц: {{ outcome|floatformat:-2 }}</li>
+      </ul>
 </div>
 {% endblock body %}

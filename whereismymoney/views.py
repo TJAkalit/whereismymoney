@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, ListView
@@ -12,7 +13,33 @@ from django.db.models import Sum
 @login_required(login_url="/auth/")
 def index(request):
     
-    return render(request, 'wim/index.html')
+    template_name = 'wim/index.html'
+    data = dict()
+    today = datetime.now()
+    data['today'] = today
+    data['month_begin'] = datetime(today.year, today.month, 1, 0, 0, 0, 0, today.tzinfo)
+    for i in range(1, 32):
+        if (data['month_begin'] + timedelta(days=i)).month!=data['month_begin'].month:
+            
+            data['month_end'] = data['month_begin'] + timedelta(days=i) - timedelta(microseconds=1)
+            break
+    
+    data['month_begin_fmt'] = data['month_begin'].strftime("%d.%m.%Y")
+    data['month_end_fmt'] = data['month_end'].strftime("%d.%m.%Y")
+    data['percent'] = data['today'].day / data['month_end'].day * 100
+    data['income'] = Pay.objects.filter(
+        type__type=0, 
+        date__gt=data['month_begin'], 
+        date__lt=data['month_end'],
+    ).aggregate(Sum('cost'))["cost__sum"]
+    data['outcome'] = Pay.objects.filter(
+        type__type=1, 
+        date__gt=data['month_begin'], 
+        date__lt=data['month_end'],
+    ).aggregate(Sum('cost'))["cost__sum"]
+    
+    
+    return render(request, template_name, data)
 
 @login_required(login_url="/auth/")
 def exit(request):
@@ -75,7 +102,7 @@ class CategoryView(ListView):
 from .models import Pay
 from .forms import PayForm
 @method_decorator(login_required, name='dispatch')
-class PayView(ListView, DayMixin):
+class PayView(ListView):
     
     template_name = 'wim/pay.html'
     model = Pay
@@ -88,6 +115,20 @@ class PayView(ListView, DayMixin):
         kwargs['summ'] = income['cost__sum'] - outcome['cost__sum']
         
         return super().get_context_data(*args, **kwargs)
+    
+    def paginate_queryset(self, queryset, page_size):
+        qs = super().paginate_queryset(queryset, page_size)
+        income = 0
+        outcome = 0
+        for item in qs[2]:
+            if item.type.type==0:
+                income+=item.cost
+            if item.type.type==1:
+                outcome+=item.cost
+        qs[1].page_summ = income - outcome
+        qs[1].page_income = income
+        qs[1].page_outcome = outcome
+        return qs
     
     def post(self, request):
         
