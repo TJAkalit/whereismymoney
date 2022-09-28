@@ -3,6 +3,9 @@
 {% block body %}
 <div class="container">
     {% include 'wim/includes/nav.html' %}
+    <a class="btn btn-primary" href="{{ previous_day_link }}"><<</a>
+    <a class="btn btn-success" href="">{{ day|date:"d.m.Y" }}</a>
+    <a class="btn btn-primary" href="{{ next_day_link }}">>></a>
     <table class="table">
         <thead>
             <tr>
@@ -16,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in page_obj %}
+            {% for item in object_list %}
             <tr>
                 <th style="color: var({{ item.type.get_color }})" scope="row">{{ item.id }}</th>
                 <td style="color: var({{ item.type.get_color }})">{{ item.get_type }}</td>
@@ -39,20 +42,11 @@
             <tr>
                 <th scope="row"></th>
                 <td></td>
-                <td>{{ page_obj.page_income|floatformat:-2 }}</td>
+                <td>{{ daily_income|floatformat:-2 }}</td>
                 <td>-</td>
-                <td>{{ page_obj.page_outcome|floatformat:-2 }}</td>
+                <td>{{ daily_outcome|floatformat:-2 }}</td>
                 <td>=</td>
-                <td>{{ page_obj.page_summ|floatformat:-2 }}</td>
-            </tr>
-            <tr>
-                <th scope="row"></th>
-                <td>Итого</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>{{ summ|floatformat:-2 }}</td>
+                <td>{{ daily_result|floatformat:-2 }}</td>
             </tr>
         </tbody>
     </table>
@@ -61,18 +55,5 @@
         {{ form }}
         <input class='form-control' type='submit' value='Сохранить'>
     </form>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.previous_page_number }}">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.previous_page_number  }}">{{ page_obj.previous_page_number  }}</a></li>
-            {% endif %}
-            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.number }}">{{ page_obj.number }}</a></li>
-            {% if page_obj.has_next %}
-            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.next_page_number  }}">{{ page_obj.next_page_number  }}</a></li>
-            <li class="page-item"><a class="page-link" href="./?page={{ page_obj.next_page_number }}">Next</a></li>
-            {% endif %}
-        </ul>
-      </nav>
 </div>
 {% endblock body %}

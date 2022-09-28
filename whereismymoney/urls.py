@@ -30,5 +30,6 @@ urlpatterns = [
     path('auth/', LoginView.as_view(), name="auth"),
     path('auth/logout', exit, name='exit'),
     path('category/', CategoryView.as_view(), name="category"),
-    path('pay/', PayView.as_view(), name='pay')
+    path('pay/<int:year>/<str:month>/<int:day>/', PayView.as_view(), name='pay'),
+    path('pay/', PayView.as_view(), name='pay'),
 ]
