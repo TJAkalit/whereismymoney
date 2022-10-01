@@ -17,28 +17,28 @@ def index(request):
     data = dict()
     today = datetime.now()
     data['today'] = today
-    data['month_begin'] = datetime(today.year, today.month, 1, 0, 0, 0, 0, today.tzinfo)
+    data['month_begin'] = datetime(today.year, today.month, 1, 0, 0, 0, 0)
     for i in range(1, 32):
         if (data['month_begin'] + timedelta(days=i)).month!=data['month_begin'].month:
-            
             data['month_end'] = data['month_begin'] + timedelta(days=i) - timedelta(microseconds=1)
             break
     
     data['month_begin_fmt'] = data['month_begin'].strftime("%d.%m.%Y")
     data['month_end_fmt'] = data['month_end'].strftime("%d.%m.%Y")
     data['percent'] = data['today'].day / data['month_end'].day * 100
-    data['income'] = Pay.objects.filter(
-        type__type=0, 
-        date__gt=data['month_begin'], 
-        date__lt=data['month_end'],
-    ).aggregate(Sum('cost'))["cost__sum"]
-    data['outcome'] = Pay.objects.filter(
-        type__type=1, 
-        date__gt=data['month_begin'], 
-        date__lt=data['month_end'],
-    ).aggregate(Sum('cost'))["cost__sum"]
     
+    for i, t in (('income', 0, ), ('outcome', 1)):
+        data[i] = Pay.objects.filter(
+            type__type=t, 
+            date__gt=data['month_begin'], 
+            date__lt=data['month_end'],
+        ).aggregate(Sum('cost'))["cost__sum"]
+        if not data[i]:
+            data[i] = 0
     
+    data['pays_summ_by_category'] = Pay.objects.filter(type__type=1)\
+        .values('type__name').annotate(total=Sum('cost'))
+
     return render(request, template_name, data)
 
 @login_required(login_url="/auth/")

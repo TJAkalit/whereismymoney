@@ -10,6 +10,11 @@
     <ul class="list-group">
         <li class="list-group-item">Доходы за месяц: {{ income|floatformat:-2 }}</li>
         <li class="list-group-item">Расходы за месяц: {{ outcome|floatformat:-2 }}</li>
-      </ul>
+    </ul>
+    <ul class="list-group">
+        {% for item in pays_summ_by_category %}
+        <li class="list-group-item">{{ item.type__name }}:{{ item.total|floatformat:-2 }}</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock body %}
