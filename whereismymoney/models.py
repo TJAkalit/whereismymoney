@@ -21,12 +21,7 @@ class Category(models.Model):
         null=False,
         blank=False,
     )
-    
-    def get_type(self):
-        for i, name in enumerate(self.types):
-            if i == self.type: return name
-        return 'Неизвестно'
-    
+   
     def __str__(self):
         return self.name
     
@@ -34,6 +29,11 @@ class Category(models.Model):
         if self.type == 0: return '--bs-green'
         elif self.type == 1: return '--bs-red'
         else: return '--bs-blue'
+    
+    def get_row_color(self):
+        if self.type == 0: return 'table-success'
+        elif self.type == 1: return 'table-danger'
+        else: return 'table-success'
     
 class Pay(models.Model):
     class Meta:
@@ -64,5 +64,5 @@ class Pay(models.Model):
         blank=False,
     )
     
-    def get_type(self):
-        return self.type.get_type()
+    def get_time(self):
+        return self.date.strftime("%H:%M") if self.date else ""

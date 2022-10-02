@@ -3,14 +3,15 @@
 {% block body %}
 <div class="container">
     {% include 'wim/includes/nav.html' %}
-    <a class="btn btn-primary" href="{{ previous_day_link }}"><<</a>
-    <a class="btn btn-success" href="">{{ day|date:"d.m.Y" }}</a>
-    <a class="btn btn-primary" href="{{ next_day_link }}">>></a>
+    <div class="d-flex flex-wrap">
+        <a class="btn btn-outline-primary me-2 p-1 flex-fill" href="{{ previous_day_link }}"><<</a>
+        <a class="btn btn-outline-success me-2 p-1 flex-fill" href="">{{ day|date:"d.m.Y" }}</a>
+        <a class="btn btn-outline-primary me-2 p-1 flex-fill" href="{{ next_day_link }}">>></a>
+    </div>
     <table class="table">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Тип</th>
                 <th scope="col">Пользователь</th>
                 <th scope="col">Дата и время</th>
                 <th scope="col">Категория</th>
@@ -20,19 +21,17 @@
         </thead>
         <tbody>
             {% for item in object_list %}
-            <tr>
+            <tr class="{{ item.type.get_row_color }}">
                 <th style="color: var({{ item.type.get_color }})" scope="row">{{ item.id }}</th>
-                <td style="color: var({{ item.type.get_color }})">{{ item.get_type }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.user }}</td>
-                <td style="color: var({{ item.type.get_color }})">{{ item.date }}</td>
+                <td style="color: var({{ item.type.get_color }})">{{ item.get_time }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.type.name }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.name }}</td>
                 <td style="color: var({{ item.type.get_color }})">{{ item.cost }}</td>
             </tr>
             {% endfor %}
             <tr>
-                <td>За</td>
-                <td>Страницу</td>
+                <td>За cтраницу</td>
                 <td>Доход</td>
                 <td></td>
                 <td>Расход</td>
@@ -41,7 +40,6 @@
             </tr>
             <tr>
                 <th scope="row"></th>
-                <td></td>
                 <td>{{ daily_income|floatformat:-2 }}</td>
                 <td>-</td>
                 <td>{{ daily_outcome|floatformat:-2 }}</td>
