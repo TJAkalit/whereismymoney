@@ -27,17 +27,35 @@ def index(request):
     data['month_end_fmt'] = data['month_end'].strftime("%d.%m.%Y")
     data['percent'] = data['today'].day / data['month_end'].day * 100
     
-    for i, t in (('income', 0, ), ('outcome', 1)):
-        data[i] = Pay.objects.filter(
-            type__type=t, 
+    for explain, pay_type in (('income', 0, ), ('outcome', 1)):
+        
+        data[explain] = Pay.objects.filter(
+            type__type=pay_type, 
             date__gt=data['month_begin'], 
             date__lt=data['month_end'],
         ).aggregate(Sum('cost'))["cost__sum"]
-        if not data[i]:
-            data[i] = 0
-    
-    data['pays_summ_by_category'] = Pay.objects.filter(type__type=1)\
-        .values('type__name').annotate(total=Sum('cost'))
+        
+        if not data[explain]:
+            data[explain] = 0
+            
+        data[explain + '_pay_summ_by_category'] = Pay.objects.filter(
+            type__type=pay_type,
+            date__gt=data['month_begin'], 
+            date__lt=data['month_end'],
+        ).values('type__name').annotate(total=Sum('cost'))
+        
+    if data['outcome'] >= data['income']:
+        data['percent_relation'] = 100
+    else:
+        data['percent_relation'] = data['outcome'] / data['income'] * 100
+    if data['percent_relation'] > 90:
+        data['percent_relation_color'] = 'bg-danger'
+    elif data['percent_relation'] > 70:
+        data['percent_relation_color'] = 'bg-warning'
+    elif data['percent_relation'] > 60:
+        data['percent_relation_color'] = 'bg-success'
+    else:
+        data['percent_relation_color'] = 'bg-info'
 
     return render(request, template_name, data)
 

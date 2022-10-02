@@ -7,14 +7,40 @@
     <div class="progress">
         <div class="progress-bar progress-bar-striped bg-success" role="progressbar" aria-label="Basic example" style="width: {{ percent }}%" aria-valuenow="{{ today.day }}" aria-valuemin="0" aria-valuemax="{{ month_end.day }}"></div>
     </div>
-    <ul class="list-group">
-        <li class="list-group-item">Доходы за месяц: {{ income|floatformat:-2 }}</li>
-        <li class="list-group-item">Расходы за месяц: {{ outcome|floatformat:-2 }}</li>
-    </ul>
-    <ul class="list-group">
-        {% for item in pays_summ_by_category %}
-        <li class="list-group-item">{{ item.type__name }}:{{ item.total|floatformat:-2 }}</li>
-        {% endfor %}
-    </ul>
+</div>
+<div class="container d-flex flex-wrap">
+    <div class="p-2 flex-fill">
+        <ul class="list-group">
+            <li class="list-group-item"><b>Статистика за месяц</b></li>
+            <li class="list-group-item">Доходы за месяц: {{ income|floatformat:-2 }}</li>
+            <li class="list-group-item">Расходы за месяц: {{ outcome|floatformat:-2 }}</li>
+        </ul>
+    </div>
+    <div class="p-2 flex-fill">
+        <ul class="list-group">
+            <li class="list-group-item bg-danger"><b>Расходы по категориям</b></li>
+            {% for item in outcome_pay_summ_by_category %}
+            <li class="list-group-item">{{ item.type__name }}: {{ item.total|floatformat:-2 }}</li>
+            {% empty %}
+            <li class="list-group-item">Нет записей за месяц</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="p-2 flex-fill">
+        <ul class="list-group">
+            <li class="list-group-item  bg-success"><b>Доходы по категориям</b></li>
+            {% for item in income_pay_summ_by_category %}
+            <li class="list-group-item">{{ item.type__name }}: {{ item.total|floatformat:-2 }}</li>
+            {% empty %}
+            <li class="list-group-item">Нет записей за месяц</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="p-2 flex-fill">
+        <ul class="list-group">
+            <li class="list-group-item {{ percent_relation_color }}"><b>Процентное соотношение</b></li>
+            <li class="list-group-item">{{ percent_relation|floatformat:-2 }}</li>
+        </ul>
+    </div>
 </div>
 {% endblock body %}
